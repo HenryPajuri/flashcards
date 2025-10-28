@@ -64,3 +64,38 @@ export async function POST(request: Request) {
     )
   }
 }
+
+export async function GET(request: Request) {
+  try {
+    const supabase = await createClient()
+    const { searchParams } = new URL(request.url)
+    const category_id = searchParams.get('category_id')
+
+    let query = supabase
+      .from('flashcards')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (category_id) {
+      query = query.eq('category_id', category_id)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch flashcards', details: error.message },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json(data, { status: 200 })
+  } catch (error) {
+    console.error('Server error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
