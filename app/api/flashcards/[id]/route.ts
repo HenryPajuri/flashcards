@@ -77,3 +77,37 @@ export async function PUT(
     )
   }
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const supabase = await createClient()
+    const { id } = await params
+
+    const { error } = await supabase
+      .from('flashcards')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Failed to delete flashcard', details: error.message },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json(
+      { message: 'Flashcard deleted successfully' },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error('Server error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
