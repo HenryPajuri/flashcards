@@ -43,3 +43,30 @@ export async function POST(request: Request) {
     )
   }
 }
+
+export async function GET() {
+  try {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Failed to fetch categories', details: error.message },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json(data, { status: 200 })
+  } catch (error) {
+    console.error('Server error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
