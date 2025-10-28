@@ -72,8 +72,29 @@ export default function PlayGamePage() {
     }
   }
 
+  const saveAttempt = async (finalScore: number) => {
+    try {
+      await fetch('/api/attempts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category_id: categoryId,
+          mode: mode,
+          correct_answers: finalScore,
+          total_questions: flashcards.length,
+        }),
+      })
+    } catch (err) {
+      console.error('Failed to save attempt:', err)
+    }
+  }
+
   const handleNext = () => {
     if (currentIndex + 1 >= flashcards.length) {
+      const finalScore = isCorrect ? score + 1 : score
+      saveAttempt(finalScore)
       setCompleted(true)
     } else {
       setCurrentIndex(currentIndex + 1)
