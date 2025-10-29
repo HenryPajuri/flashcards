@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import AddCategoryForm from '@/components/AddCategoryForm'
+import AddFlashcardForm from '@/components/AddFlashcardForm'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -62,7 +63,10 @@ export default async function Home() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-4">Flashcards</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Flashcards</h2>
+              <AddFlashcardForm categories={categories || []} />
+            </div>
             {flashcardsError ? (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                 <p className="text-red-800 dark:text-red-200 font-semibold">Error loading flashcards</p>
