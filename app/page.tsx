@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import AddCategoryForm from '@/components/AddCategoryForm'
 import AddFlashcardForm from '@/components/AddFlashcardForm'
-import DeleteCategoryButton from '@/components/DeleteCategoryButton'
-import DeleteFlashcardButton from '@/components/DeleteFlashcardButton'
+import CategoryCard from '@/components/CategoryCard'
+import FlashcardCard from '@/components/FlashcardCard'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -41,25 +41,7 @@ export default async function Home() {
             ) : categories && categories.length > 0 ? (
               <div className="space-y-3">
                 {categories.map((category) => (
-                  <div
-                    key={category.id}
-                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{category.name}</h3>
-                        {category.description && (
-                          <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
-                            {category.description}
-                          </p>
-                        )}
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                          Created {new Date(category.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <DeleteCategoryButton categoryId={category.id} categoryName={category.name} />
-                    </div>
-                  </div>
+                  <CategoryCard key={category.id} category={category} />
                 ))}
               </div>
             ) : (
@@ -82,27 +64,7 @@ export default async function Home() {
             ) : flashcards && flashcards.length > 0 ? (
               <div className="space-y-3">
                 {flashcards.map((card) => (
-                  <div
-                    key={card.id}
-                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <div className="mb-2">
-                          <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Q:</span>
-                          <p className="text-sm font-medium mt-1">{card.question}</p>
-                        </div>
-                        <div>
-                          <span className="text-xs font-semibold text-green-600 dark:text-green-400">A:</span>
-                          <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{card.answer}</p>
-                        </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                          Created {new Date(card.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <DeleteFlashcardButton flashcardId={card.id} />
-                    </div>
-                  </div>
+                  <FlashcardCard key={card.id} flashcard={card} categories={categories || []} />
                 ))}
               </div>
             ) : (
